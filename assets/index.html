@@ -17,26 +17,26 @@
     <link rel="stylesheet" href="stylesheets/main.css">
 
     <!-- Javascripts -->
-    <script src="assets/javascripts/main.js"></script>
+    <script src="javascripts/app.js"></script>
   </head>
 
-<body>
+<body ng-app="app">
   <header>
     <div class="container">
       <h1>
-        <a href="/">Gopherling</a>
+        <a href="/#/">Gopherling</a>
       </h1>
 
       <nav>
         <ul>
           <li>
-            <a href="/new">Create a new test</a>
+            <a href="/#/new">Create a new test</a>
           </li>
           <li>
-            <a href="/tests">All my tests</a>
+            <a href="/#/tests">All my tests</a>
           </li>
           <li>
-            <a href="/settings">Settings</a>
+            <a href="/#/settings">Settings</a>
           </li>
         </ul>
       </nav>
@@ -47,7 +47,7 @@
     <section id="hero">
       <div class="container">
         <h2>A load/stress testing tool without... stress</h2>
-        <a href="/new">Try me !</a><a href="https://github.com/gophergala/gopherling">Contribute</a>
+        <a href="/#/new">Try me !</a><a href="https://github.com/gophergala/gopherling">Contribute</a>
       </div>
     </section>
 
