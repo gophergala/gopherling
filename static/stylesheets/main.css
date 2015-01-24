@@ -285,6 +285,13 @@ body > header nav ul li a {
 body > header nav ul li a:hover {
   color: #fff;
 }
+body > footer {
+  background: #00222f;
+  padding: 2rem 0;
+}
+body > footer span {
+  color: #fff;
+}
 #hero {
   height: 400px;
   background: #0099d3;
@@ -298,10 +305,10 @@ body > header nav ul li a:hover {
   text-shadow: #fff 0 0 1px, #000 1px 1px 1px;
   margin: 6.25rem 0;
 }
-#hero button {
+#hero a {
   font-size: 1.125rem;
 }
-#hero button:nth-child(2) {
+#hero a:nth-child(2) {
   background: #0099d3;
   border: 2px solid #fff;
   border-radius: 6px;
@@ -316,23 +323,23 @@ body > header nav ul li a:hover {
   -webkit-transition: color 0.5s, background 0.5s;
           transition: color 0.5s, background 0.5s;
 }
-#hero button:nth-child(2):hover {
+#hero a:nth-child(2):hover {
   background: #fff;
   border: 2px solid #0099d3;
   color: #0099d3;
 }
-#hero button:nth-child(2):active {
+#hero a:nth-child(2):active {
   background: #0099d3;
   border: 2px solid #fff;
   color: #fff;
 }
-#hero button:nth-child(2):disabled {
+#hero a:nth-child(2):disabled {
   background: #008abe;
   border: 2px solid #fff;
   color: #fff;
   opacity: 0.4;
 }
-#hero button:last-child {
+#hero a:last-child {
   background: #fff;
   border: 2px solid #0099d3;
   border-radius: 6px;
@@ -348,24 +355,25 @@ body > header nav ul li a:hover {
           transition: color 0.5s, background 0.5s;
   margin-left: 3rem;
 }
-#hero button:last-child:hover {
+#hero a:last-child:hover {
   background: #0099d3;
   border: 2px solid #fff;
   color: #fff;
 }
-#hero button:last-child:active {
+#hero a:last-child:active {
   background: #fff;
   border: 2px solid #0099d3;
   color: #0099d3;
 }
-#hero button:last-child:disabled {
+#hero a:last-child:disabled {
   background: #e6e6e6;
   border: 2px solid #0099d3;
   color: #0099d3;
   opacity: 0.4;
 }
 #how-to {
-  padding: 2rem 0;
+  height: 400px;
+  padding: 3rem 0 2rem 0;
   text-align: center;
 }
 #how-to h2 {

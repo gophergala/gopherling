@@ -65,6 +65,12 @@ body > header
         &:hover
           color white
 
+body > footer
+  background darken($blue, 80%)
+  padding remify(32) 0
+  span
+    color white
+
 #hero
   height 400px
   background darken($blue, 10%)
@@ -78,7 +84,7 @@ body > header
     text-shadow #fff 0 0 1px, #000 1px 1px 1px
     margin remify(100) 0
 
-  button
+  a
     font-size remify(18)
     &:nth-child(2)
       button(darken($blue, 10%) , white)
@@ -87,7 +93,8 @@ body > header
       margin-left remify(48)
 
 #how-to
-  padding remify(32) 0
+  height 400px
+  padding remify(48) 0 remify(32) 0
   text-align center
 
   h2
