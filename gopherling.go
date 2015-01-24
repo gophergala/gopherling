@@ -60,7 +60,14 @@ func updateTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func deleteTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "I want to delete a test, (id: %s)!\n", ps.ByName("id"))
+	err := database.C("tests").RemoveId(bson.ObjectIdHex(ps.ByName("id")))
+
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	w.WriteHeader(200)
 }
 
 func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
