@@ -1,0 +1,36 @@
+{
+  "name": "Gopherling",
+  "version": "0.0.0",
+  "description": "to-do",
+  "main": "index.js",
+  "scripts": {
+    "setup": "npm install",
+    "build": "gulp build",
+    "server": "gulp server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gophergala/gopherling.git"
+  },
+  "author": "frostwind <hi@frostwind.me> (http://www.frostwind.me/)",
+  "license": "GNU GPL v3",
+  "bugs": {
+    "url": "https://github.com/gophergala/gopherling/issues"
+  },
+  "homepage": "https://github.com/gophergala/gopherling",
+  "private": true,
+  "devDependencies": {
+    "angular": "^1.3.8",
+    "angular-route": "^1.3.8",
+    "browserify": "^8.1.1",
+    "citrine": "0.0.7",
+    "coffee-script": "^1.8.0",
+    "coffeeify": "^1.0.0",
+    "gulp": "^3.8.10",
+    "gulp-autoprefixer": "^2.1.0",
+    "gulp-connect": "^2.2.0",
+    "gulp-stylus": "^2.0.0",
+    "jeet": "^6.1.2",
+    "vinyl-source-stream": "^1.0.0"
+  }
+}
