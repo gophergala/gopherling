@@ -1,6 +1,7 @@
 @import 'jeet'
 @import 'citrine'
 
+@import 'fonts'
 @import 'colors'
 @import 'icons'
 @import 'animations'
@@ -56,7 +57,6 @@ body > header
       a
         color white
         display inline-block
-        font-family 'Montserrat', sans-serif
         font-size remify(13)
         font-weight 700
         height remify(74)
@@ -65,7 +65,7 @@ body > header
         &:hover
           color white
 
-body > footer
+main > footer
   background darken($blue, 80%)
   padding remify(32) 0
   span
@@ -78,7 +78,6 @@ body > footer
 
   h2
     color white
-    font-family 'Montserrat', sans-serif
     font-size remify(48)
     font-weight bold
     text-shadow #fff 0 0 1px, #000 1px 1px 1px
@@ -132,3 +131,39 @@ body > footer
         transition color 0.3s ease
     p
       margin-top remify(180)
+
+.subheader
+  background darken($blue, 10%)
+  padding remify(38)
+
+  h2
+    color white
+    font-size remify(32)
+    font-weight bold
+    text-transform uppercase
+    text-shadow #fff 0 0 0px, #fff 0px 0px 1px
+
+#new
+  form
+    col(1/2, cycle:2)
+    border 1px solid $very-light-grey
+    border-radius 4px
+    margin 0 auto
+    margin-top remify(38)
+    fieldset
+      padding remify(12)
+      li
+        display inline-block
+      input, label
+        display block
+        width 100%
+      input
+        border 1px solid $very-light-grey
+        border-radius 2px
+        margin-top remify(6)
+        padding remify(6)
+      select
+        background white
+        border-radius 2px
+        margin-top remify(6)
+        padding remify(6)

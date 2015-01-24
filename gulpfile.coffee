@@ -49,7 +49,7 @@ gulp.task 'watch', () ->
     gulp.watch 'assets/javascripts/**/*.coffee', ['js']
     gulp.watch 'assets/stylesheets/**/*.styl', ['css']
     gulp.watch 'assets/fonts/**/*', ['fonts']
-    gulp.watch 'assets/*.html', ['html']
+    gulp.watch 'assets/**/*', ['html']
 
 gulp.task 'build', ['js', 'css', 'fonts', 'html']
 gulp.task 'server', ['build', 'webserver', 'watch']
