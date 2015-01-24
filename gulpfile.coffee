@@ -29,6 +29,11 @@ gulp.task 'css', () ->
   .pipe gulp.dest './static/stylesheets'
   .pipe connect.reload()
 
+gulp.task 'fonts', () ->
+  gulp.src './assets/fonts/**/*'
+  .pipe gulp.dest './static/fonts'
+  .pipe connect.reload()
+
 gulp.task 'html', () ->
   gulp.src './assets/**/*.html'
   .pipe gulp.dest './static'
@@ -43,7 +48,8 @@ gulp.task 'webserver', () ->
 gulp.task 'watch', () ->
     gulp.watch 'assets/javascripts/**/*.coffee', ['js']
     gulp.watch 'assets/stylesheets/**/*.styl', ['css']
+    gulp.watch 'assets/fonts/**/*', ['fonts']
     gulp.watch 'assets/*.html', ['html']
 
-gulp.task 'build', ['js', 'css', 'html']
+gulp.task 'build', ['js', 'css', 'fonts', 'html']
 gulp.task 'server', ['build', 'webserver', 'watch']

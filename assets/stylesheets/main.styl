@@ -2,6 +2,7 @@
 @import 'citrine'
 
 @import 'colors'
+@import 'icons'
 @import 'animations'
 @import 'elements'
 
@@ -16,7 +17,7 @@ a, a:visited, a:hover
 
 body
   color $dark-grey
-  font-family 'Raleway', sans-serif
+  font-family 'Montserrat', sans-serif
   font-size remify(14)
   font-weight 400
 
@@ -84,3 +85,43 @@ body > header
     &:last-child
       button(white, darken($blue, 10%))
       margin-left remify(48)
+
+#how-to
+  padding remify(32) 0
+  text-align center
+
+  h2
+    color $dark-grey
+    font-size remify(36)
+    margin 0 0 remify(42) 0
+    text-shadow #000 0 0 1px, #fff 1px 1px 1px
+
+  li
+    col(1/3)
+    position relative
+
+    span
+      background $blue
+      display inline-table
+      border 3px solid $blue
+      border-radius 50%
+      width 120px
+      height 120px
+      position absolute
+      margin-left -60px
+      margin-top -60px
+      top 50%
+      left 50%
+      transition background 0.3s ease
+      &:hover
+        background white
+        i
+          color $blue
+      i
+        display table-cell
+        color white
+        font-size remify(58)
+        vertical-align middle
+        transition color 0.3s ease
+    p
+      margin-top remify(180)

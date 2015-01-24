@@ -1,10 +1,57 @@
-@-webkit-keyframes color-flip {
-  to {
-    background: #fff;
-    color: #00aaea;
-    -webkit-transform: rotateY(360deg);
-            transform: rotateY(360deg);
-  }
+@font-face {
+  font-family: 'fontello';
+  src: url("../fonts/fontello.eot?64691259");
+  src: url("../fonts/fontello.eot?64691259#iefix") format('embedded-opentype'), url("../fonts/fontello.woff?64691259") format('woff'), url("../fonts/fontello.ttf?64691259") format('truetype'), url("../fonts/fontello.svg?64691259#fontello") format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: 0.2em;
+  text-align: center;
+/* opacity: .8; */
+/* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+/* fix buttons height, for twitter bootstrap */
+/* Animation center compensation - margins should be symmetric */
+/* remove if not needed */
+  margin-left: 0.2em;
+/* you can be more comfortable with increased icons size */
+/* font-size: 120%; */
+/* Uncomment for 3D effect */
+/* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+.icon-docs:before {
+  content: '\e800';
+}
+.icon-github:before {
+  content: '\e801';
+}
+.icon-eye:before {
+  content: '\e802';
+}
+.icon-plus-squared:before {
+  content: '\e803';
+}
+.icon-twitter:before {
+  content: '\e804';
+}
+.icon-gauge:before {
+  content: '\e805';
+}
+.icon-flow-branch:before {
+  content: '\e806';
+}
+.icon-tools:before {
+  content: '\e807';
 }
 @-webkit-keyframes color-flip {
   to {
@@ -184,7 +231,7 @@ a:hover {
 }
 body {
   color: #777;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
 }
@@ -316,4 +363,67 @@ body > header nav ul li a:hover {
   border: 2px solid #0099d3;
   color: #0099d3;
   opacity: 0.4;
+}
+#how-to {
+  padding: 2rem 0;
+  text-align: center;
+}
+#how-to h2 {
+  color: #777;
+  font-size: 2.25rem;
+  margin: 0 0 2.625rem 0;
+  text-shadow: #000 0 0 1px, #fff 1px 1px 1px;
+}
+#how-to li {
+  *zoom: 1;
+  float: left;
+  clear: none;
+  text-align: inherit;
+  width: 31.3333333333333%;
+  margin-left: 0%;
+  margin-right: 3%;
+  position: relative;
+}
+#how-to li:before,
+#how-to li:after {
+  content: '';
+  display: table;
+}
+#how-to li:after {
+  clear: both;
+}
+#how-to li:last-child {
+  margin-right: 0%;
+}
+#how-to li span {
+  background: #00aaea;
+  display: inline-table;
+  border: 3px solid #00aaea;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  position: absolute;
+  margin-left: -60px;
+  margin-top: -60px;
+  top: 50%;
+  left: 50%;
+  -webkit-transition: background 0.3s ease;
+          transition: background 0.3s ease;
+}
+#how-to li span:hover {
+  background: #fff;
+}
+#how-to li span:hover i {
+  color: #00aaea;
+}
+#how-to li span i {
+  display: table-cell;
+  color: #fff;
+  font-size: 3.625rem;
+  vertical-align: middle;
+  -webkit-transition: color 0.3s ease;
+          transition: color 0.3s ease;
+}
+#how-to li p {
+  margin-top: 11.25rem;
 }
