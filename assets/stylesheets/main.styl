@@ -1,0 +1,64 @@
+@import 'jeet'
+@import 'citrine'
+
+@import 'colors'
+@import 'animations'
+
+citrine-box-sizing()
+citrine-reset()
+
+a, a:visited, a:hover
+  text-decoration none
+
+.container
+  center(960px)
+
+body
+  color $dark-grey
+  font-family 'Raleway', sans-serif
+  font-size remify(14)
+  font-weight 400
+
+body > header
+  background $blue
+  box-shadow inset rgba(0, 0, 0, .20) 0 -2px 0
+  height remify(76)
+
+  h1
+    color white
+    display inline-block
+    font-family 'Pacifico', sans-serif
+    font-size remify(38)
+    float left
+    margin rhythm(1, 12, 4) 0 rhythm(1, 12) 0
+    text-align center
+    a
+      color white
+      text-decoration none
+    span
+      font-size remify(18)
+
+  nav
+    display block
+    float right
+    line-height remify(80)
+
+    ul li
+      display inline-block
+      position relative
+      pointer-events initial
+      &:hover
+        a
+          animation color-flip 1s ease
+          animation-fill-mode forwards
+      a
+        color white
+        display inline-block
+        font-family 'Montserrat', sans-serif
+        font-size remify(13)
+        font-weight 700
+        padding 0 remify(16)
+        text-transform uppercase
+        &:hover
+          color white
+

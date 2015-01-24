@@ -1,0 +1,16 @@
+@-webkit-keyframes color-flip {
+  to {
+    background: #fff;
+    color: $blue;
+    -webkit-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+  }
+}
+@keyframes color-flip {
+  to {
+    background: #fff;
+    color: $blue;
+    -webkit-transform: rotateY(360deg);
+            transform: rotateY(360deg);
+  }
+}
