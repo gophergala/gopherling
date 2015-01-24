@@ -3,6 +3,7 @@
 
 @import 'colors'
 @import 'animations'
+@import 'elements'
 
 citrine-box-sizing()
 citrine-reset()
@@ -11,7 +12,7 @@ a, a:visited, a:hover
   text-decoration none
 
 .container
-  center(960px)
+  center(1140px)
 
 body
   color $dark-grey
@@ -41,7 +42,7 @@ body > header
   nav
     display block
     float right
-    line-height remify(80)
+    line-height remify(79)
 
     ul li
       display inline-block
@@ -57,8 +58,29 @@ body > header
         font-family 'Montserrat', sans-serif
         font-size remify(13)
         font-weight 700
+        height remify(74)
         padding 0 remify(16)
         text-transform uppercase
         &:hover
           color white
 
+#hero
+  height 400px
+  background darken($blue, 10%)
+  text-align center
+
+  h2
+    color white
+    font-family 'Montserrat', sans-serif
+    font-size remify(48)
+    font-weight bold
+    text-shadow #fff 0 0 1px, #000 1px 1px 1px
+    margin remify(100) 0
+
+  button
+    font-size remify(18)
+    &:nth-child(2)
+      button(darken($blue, 10%) , white)
+    &:last-child
+      button(white, darken($blue, 10%))
+      margin-left remify(48)

@@ -166,7 +166,7 @@ a:hover {
 .container {
   *zoom: 1;
   width: auto;
-  max-width: 960px;
+  max-width: 1140px;
   float: none;
   display: block;
   margin-right: auto;
@@ -212,7 +212,7 @@ body > header h1 span {
 body > header nav {
   display: block;
   float: right;
-  line-height: 5rem;
+  line-height: 4.9375rem;
 }
 body > header nav ul li {
   display: inline-block;
@@ -231,9 +231,89 @@ body > header nav ul li a {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.8125rem;
   font-weight: 700;
+  height: 4.625rem;
   padding: 0 1rem;
   text-transform: uppercase;
 }
 body > header nav ul li a:hover {
   color: #fff;
+}
+#hero {
+  height: 400px;
+  background: #0099d3;
+  text-align: center;
+}
+#hero h2 {
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: #fff 0 0 1px, #000 1px 1px 1px;
+  margin: 6.25rem 0;
+}
+#hero button {
+  font-size: 1.125rem;
+}
+#hero button:nth-child(2) {
+  background: #0099d3;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  -webkit-transition: color 0.5s, background 0.5s;
+          transition: color 0.5s, background 0.5s;
+}
+#hero button:nth-child(2):hover {
+  background: #fff;
+  border: 2px solid #0099d3;
+  color: #0099d3;
+}
+#hero button:nth-child(2):active {
+  background: #0099d3;
+  border: 2px solid #fff;
+  color: #fff;
+}
+#hero button:nth-child(2):disabled {
+  background: #008abe;
+  border: 2px solid #fff;
+  color: #fff;
+  opacity: 0.4;
+}
+#hero button:last-child {
+  background: #fff;
+  border: 2px solid #0099d3;
+  border-radius: 6px;
+  color: #0099d3;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  -webkit-transition: color 0.5s, background 0.5s;
+          transition: color 0.5s, background 0.5s;
+  margin-left: 3rem;
+}
+#hero button:last-child:hover {
+  background: #0099d3;
+  border: 2px solid #fff;
+  color: #fff;
+}
+#hero button:last-child:active {
+  background: #fff;
+  border: 2px solid #0099d3;
+  color: #0099d3;
+}
+#hero button:last-child:disabled {
+  background: #e6e6e6;
+  border: 2px solid #0099d3;
+  color: #0099d3;
+  opacity: 0.4;
 }
