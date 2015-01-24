@@ -1,17 +1,54 @@
 package main
 
 import (
-    "fmt"
-    "github.com/julienschmidt/httprouter"
-    "net/http"
+	"encoding/json"
+	"fmt"
+	"github.com/julienschmidt/httprouter"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+	"net/http"
 )
 
+var (
+	database        *mgo.Database
+	databaseSession *mgo.Session
+)
+
+type Test struct {
+	Id          bson.ObjectId `bson:"_id,omitempty"`
+	Name        string        `bson:"name"`
+	Description string        `bson:"description"`
+	BaseUrl     string        `bson:"base_url"`
+	Requests    int           `bson:"requests"`
+	Concurrency int           `bson:"concurrency"`
+}
+
 func showTests(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-    fmt.Fprintf(w, "I want to see all tests\n")
+	fmt.Fprintf(w, "I want to see all tests\n")
 }
 
 func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-    fmt.Fprintf(w, "I want to add a test!\n")
+	decoder := json.NewDecoder(r.Body)
+
+	var t Test
+
+	err := decoder.Decode(&t)
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	tests := database.C("tests")
+
+	t.Id = bson.NewObjectId()
+
+	err = tests.Insert(&t)
+
+	if err != nil {
+		w.WriteHeader(500)
+	} else {
+		w.WriteHeader(201)
+	}
 }
 
 func showTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -31,29 +68,45 @@ func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func main() {
-    router := httprouter.New()
 
-		// View all the tests
-    router.GET("/api/tests", showTests)
+	// Initialize our database connection
+	databaseSession, err := mgo.Dial("127.0.0.1:27017")
+	if err != nil {
+		panic("Couldn't connect to the database server")
+	} else {
+		fmt.Println("Successfully connected to the database server")
+	}
 
-		// Add a test
-    router.POST("/api/tests", addTest)
+	defer databaseSession.Close()
 
-		// View a single test
-		router.GET("/api/tests/:id", showTest)
+	// Select the appropriate database
+	database = databaseSession.DB("gopherling")
 
-		// Update a test
-		router.PUT("/api/tests/:id", updateTest)
+	// Create a new router instance
+	router := httprouter.New()
 
-		// Delete a test
-		router.DELETE("/api/tests/:id", deleteTest)
+	// View all the tests
+	router.GET("/api/tests", showTests)
 
-		// Start a test
-		router.POST("/api/tests/:id/start", startTest)
+	// Add a test
+	router.POST("/api/tests", addTest)
 
-		// Catch-all (angular app) 
-		router.NotFound = http.FileServer(http.Dir("static")).ServeHTTP
+	// View a single test
+	router.GET("/api/tests/:id", showTest)
 
-		fmt.Println("Gopherling server started on port 9410")
-    http.ListenAndServe(":9410", router)
+	// Update a test
+	router.PUT("/api/tests/:id", updateTest)
+
+	// Delete a test
+	router.DELETE("/api/tests/:id", deleteTest)
+
+	// Start a test
+	router.POST("/api/tests/:id/start", startTest)
+
+	// Catch-all (angular app)
+	router.NotFound = http.FileServer(http.Dir("static")).ServeHTTP
+
+	// Start listening
+	fmt.Println("Gopherling server started on port 9410")
+	http.ListenAndServe(":9410", router)
 }
