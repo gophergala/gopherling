@@ -24,7 +24,23 @@ type Test struct {
 }
 
 func showTests(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprintf(w, "I want to see all tests\n")
+	results := make([]Test, 0) 
+	err := database.C("tests").Find(bson.M{}).All(&results)
+
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	js, err := json.Marshal(results)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	w.Write(js)
 }
 
 func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
