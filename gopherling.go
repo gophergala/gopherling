@@ -2,14 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/gophergala/gopherling/loader"
+	"github.com/gophergala/gopherling/models"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
-	"flag"
 )
 
 var (
@@ -21,23 +22,8 @@ var (
 	}
 )
 
-type Task struct {
-	Method string `bson:"method" json:"method"`
-	Path   string `bson:"path" json:"path"`
-}
-
-type Test struct {
-	Id          bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
-	Name        string        `bson:"name" json:"name"`
-	Description string        `bson:"description" json:"description"`
-	BaseUrl     string        `bson:"base_url" json:"baseUrl"`
-	Requests    int           `bson:"requests" json:"requests"`
-	Concurrency int           `bson:"concurrency" json:"concurrency"`
-	Tasks       []Task        `bson:"tasks" json:"tasks"`
-}
-
 func showTests(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	results := make([]Test, 0)
+	results := make([]models.Test, 0)
 	err := database.C("tests").Find(bson.M{}).All(&results)
 
 	if err != nil {
@@ -59,7 +45,7 @@ func showTests(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	decoder := json.NewDecoder(r.Body)
 
-	var t Test
+	var t models.Test
 
 	err := decoder.Decode(&t)
 	if err != nil {
@@ -89,7 +75,7 @@ func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func showTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	var t Test
+	var t models.Test
 
 	err := database.C("tests").Find(bson.M{"_id": bson.ObjectIdHex(ps.ByName("id"))}).One(&t)
 
@@ -131,7 +117,7 @@ func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		return
 	}
 
-	var t Test
+	var t models.Test
 
 	err = database.C("tests").Find(bson.M{"_id": bson.ObjectIdHex(ps.ByName("id"))}).One(&t)
 	if err != nil {
@@ -144,8 +130,9 @@ func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	l := loader.New(t.Requests, t.Concurrency, conn)
 
 	for _, task := range t.Tasks {
-		l.AddTasks(task.Method, t.BaseUrl, task.Path)
+		l.AddTasks(task.Method, t.BaseUrl, task.Path, task.Headers)
 	}
+
 	l.Run()
 }
 
@@ -156,9 +143,8 @@ func main() {
 	flag.StringVar(&dbPort, "dbPort", "27017", "mongoDB port")
 	flag.Parse()
 
-
 	// Initialize our database connection
-	databaseSession, err := mgo.Dial(dbHost+":"+dbPort)
+	databaseSession, err := mgo.Dial(dbHost + ":" + dbPort)
 	if err != nil {
 		panic("Couldn't connect to the database server")
 	} else {

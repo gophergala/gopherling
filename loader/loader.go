@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sync"
 	"time"
+	"github.com/gophergala/gopherling/models"
 )
 
 type feedback struct {
@@ -27,10 +28,12 @@ func New(n, c int, ws *websocket.Conn) *loader {
 	return &loader{n, c, requests, ws}
 }
 
-func (l *loader) AddTasks(method string, host string, path string) {
-	// let's just start with one
-	// TODO: this is going to be a loop
+func (l *loader) AddTasks(method string, host string, path string, headers []models.Header) {
 	req, err := http.NewRequest(method, host+"/"+path, nil)
+
+	for _, header := range headers {
+		req.Header.Set(header.Field, header.Value)
+	}
 
 	if err != nil {
 		fmt.Println("something went wrong !")
