@@ -25,7 +25,6 @@ module.exports = class
     .success (res) =>
       if run is true
         @location.path '/tests/'+res._id
-        console.debug 'Test ('+res._id+') will be started'
       else
         @location.path '/tests'
       console.debug 'Your test has been saved'

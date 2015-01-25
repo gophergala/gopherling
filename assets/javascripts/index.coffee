@@ -10,11 +10,15 @@ class Config
       templateUrl: 'views/home.html'
 
     .when '/new',
-      templateUrl: 'views/new.html'
+      templateUrl: 'views/new_test.html'
       controller: 'NewTestController'
 
     .when '/tests',
       templateUrl: 'views/tests.html'
+
+    .when '/tests/:id',
+      templateUrl: 'views/start_test.html'
+      controller: 'StartTestController'
 
     .when '/settings',
       templateUrl: 'views/settings.html'

@@ -2,6 +2,7 @@ package loader
 
 import (
 	"fmt"
+	"github.com/gorilla/websocket"
 	"net/http"
 	"sync"
 )
@@ -11,17 +12,18 @@ type loader struct {
 	c int
 
 	requests []*http.Request
+	ws       *websocket.Conn
 }
 
-func New(n, c int) *loader {
+func New(n, c int, ws *websocket.Conn) *loader {
 	requests := make([]*http.Request, 0)
-	return &loader{n, c, requests}
+	return &loader{n, c, requests, ws}
 }
 
-func (l *loader) AddTasks() {
+func (l *loader) AddTasks(method string, host string, path string) {
 	// let's just start with one
 	// TODO: this is going to be a loop
-	req, err := http.NewRequest("GET", "http://127.0.0.1:8080", nil)
+	req, err := http.NewRequest(method, host+"/"+path, nil)
 
 	if err != nil {
 		fmt.Println("something went wrong !")
@@ -47,10 +49,12 @@ func (l *loader) spawnClient(wg *sync.WaitGroup, queue chan []*http.Request) {
 
 		res.Body.Close()
 
+		if err := l.ws.WriteMessage(websocket.TextMessage, []byte("One request done")); err != nil {
+			fmt.Println("An error occured: the requested test doesn't exist")
+		}
+
 		// We are done
 		wg.Done()
-
-		fmt.Println("i finished a request")
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gophergala/gopherling/loader"
+	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -13,6 +14,10 @@ import (
 var (
 	database        *mgo.Database
 	databaseSession *mgo.Session
+	upgrader        = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
 )
 
 type Task struct {
@@ -119,23 +124,28 @@ func deleteTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	var t Test
-
-	err := database.C("tests").Find(bson.M{"_id": bson.ObjectIdHex(ps.ByName("id"))}).One(&t)
-
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		w.WriteHeader(404)
+		fmt.Println(err)
 		return
 	}
 
-	l := loader.New(1000, 100)
+	var t Test
 
-	l.AddTasks()
-	go func() {
-		l.Run()
-	}()
+	err = database.C("tests").Find(bson.M{"_id": bson.ObjectIdHex(ps.ByName("id"))}).One(&t)
+	if err != nil {
+		if err := conn.WriteMessage(websocket.TextMessage, []byte("Not found")); err != nil {
+			fmt.Println("An error occured: the requested test doesn't exist")
+		}
+		return
+	}
 
-	w.WriteHeader(200)
+	l := loader.New(t.Requests, t.Concurrency, conn)
+
+	for _, task := range t.Tasks {
+		l.AddTasks(task.Method, t.BaseUrl, task.Path)
+	}
+	l.Run()
 }
 
 func main() {
@@ -171,7 +181,7 @@ func main() {
 	router.DELETE("/api/tests/:id", deleteTest)
 
 	// Start a test
-	router.POST("/api/tests/:id/start", startTest)
+	router.GET("/api/tests/:id/start", startTest)
 
 	// Catch-all (angular app)
 	router.NotFound = http.FileServer(http.Dir("static")).ServeHTTP
