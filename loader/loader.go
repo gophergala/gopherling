@@ -5,11 +5,13 @@ import (
 	"github.com/gorilla/websocket"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type feedback struct {
-	Task       int `json:"task"`
-	StatusCode int `json:"statusCode"`
+	Task       int           `json:"task"`
+	StatusCode int           `json:"statusCode"`
+	Duration   time.Duration `json:"duration"`
 }
 
 type loader struct {
@@ -44,14 +46,15 @@ func (l *loader) spawnClient(wg *sync.WaitGroup, queue chan []*http.Request) {
 	// if we're not busy, get a tasks list from the queue channel
 	for requests := range queue {
 		for i, req := range requests {
+			start := time.Now()
 			// Send the request
 			res, err := client.Do(req)
 			if err != nil {
-				if err := l.ws.WriteJSON(feedback{Task: i, StatusCode: 0}); err != nil {
+				if err := l.ws.WriteJSON(feedback{Task: i, StatusCode: 0, Duration: time.Since(start)}); err != nil {
 					fmt.Println("Couldn't write to the socket")
 				}
 			} else {
-				if err := l.ws.WriteJSON(feedback{Task: i, StatusCode: res.StatusCode}); err != nil {
+				if err := l.ws.WriteJSON(feedback{Task: i, StatusCode: res.StatusCode, Duration: time.Since(start)}); err != nil {
 					fmt.Println("Couldn't write to the socket")
 				}
 
@@ -88,4 +91,7 @@ func (l *loader) Run() {
 
 	// unblock
 	wg.Wait()
+
+	// close the socket
+	l.ws.Close()
 }

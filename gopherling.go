@@ -29,7 +29,7 @@ type Test struct {
 	Id          bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
 	Name        string        `bson:"name" json:"name"`
 	Description string        `bson:"description" json:"description"`
-	BaseUrl     string        `bson:"base_url" json:"base_url"`
+	BaseUrl     string        `bson:"base_url" json:"baseUrl"`
 	Requests    int           `bson:"requests" json:"requests"`
 	Concurrency int           `bson:"concurrency" json:"concurrency"`
 	Tasks       []Task        `bson:"tasks" json:"tasks"`

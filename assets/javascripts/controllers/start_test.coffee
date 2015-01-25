@@ -1,6 +1,6 @@
 module.exports = class
-  @$inject: ['$scope', '$http', '$routeParams', '$websocket']
-  constructor: (@scope, @http, @params, @socket) ->
+  @$inject: ['$scope', '$http', '$routeParams', '$interval', '$websocket']
+  constructor: (@scope, @http, @params, @interval, @socket) ->
     @scope.test =
       name: ''
       tasks: []
@@ -12,7 +12,9 @@ module.exports = class
       min: 0
       mean: 0
       max: 0
-      rps: 0
+      rps: '..'
+
+    @start = null
 
     @http.get '/api/tests/'+@params.id
     .success (res) =>
@@ -25,9 +27,12 @@ module.exports = class
         task.min = 0
         task.mean = 0
         task.max = 0
-        task.rps = 0
+        task.rps = '..'
 
       @stream = @socket 'ws://127.0.0.1:9410/api/tests/'+@params.id+'/start'
+
+      @stream.onOpen () =>
+        @start = Date.now()
 
       @stream.onMessage (message) =>
         data = angular.fromJson(message.data)
@@ -43,3 +48,21 @@ module.exports = class
         else
           @scope.test.tasks[data.task].failures++
           @scope.total.failures++
+
+        if data.duration < @scope.test.tasks[data.task].min or @scope.test.tasks[data.task].min is 0
+          @scope.test.tasks[data.task].min = data.duration
+
+        if data.duration > @scope.test.tasks[data.task].max or @scope.test.tasks[data.task].max is 0
+          @scope.test.tasks[data.task].max = data.duration
+
+        @scope.test.tasks[data.task].mean = (@scope.test.tasks[data.task].min + @scope.test.tasks[data.task].max) / 2
+
+      @stream.onClose () =>
+        if @start?
+          time = (Date.now() - @start) / 1000
+          @scope.total.rps = 0
+          for task in @scope.test.tasks
+            task.rps = (task.requests / time).toFixed(2)
+            @scope.total.rps += task.requests / time
+          @scope.total.rps = @scope.total.rps.toFixed(2)
+          @scope.$apply()

@@ -93,12 +93,13 @@ module.exports = (function() {
 
 },{}],3:[function(require,module,exports){
 module.exports = (function() {
-  _Class.$inject = ['$scope', '$http', '$routeParams', '$websocket'];
+  _Class.$inject = ['$scope', '$http', '$routeParams', '$interval', '$websocket'];
 
-  function _Class(scope, http, params, socket) {
+  function _Class(scope, http, params, interval, socket) {
     this.scope = scope;
     this.http = http;
     this.params = params;
+    this.interval = interval;
     this.socket = socket;
     this.scope.test = {
       name: '',
@@ -111,8 +112,9 @@ module.exports = (function() {
       min: 0,
       mean: 0,
       max: 0,
-      rps: 0
+      rps: '..'
     };
+    this.start = null;
     this.http.get('/api/tests/' + this.params.id).success((function(_this) {
       return function(res) {
         var task, _i, _len, _ref;
@@ -126,20 +128,45 @@ module.exports = (function() {
           task.min = 0;
           task.mean = 0;
           task.max = 0;
-          task.rps = 0;
+          task.rps = '..';
         }
         _this.stream = _this.socket('ws://127.0.0.1:9410/api/tests/' + _this.params.id + '/start');
-        return _this.stream.onMessage(function(message) {
+        _this.stream.onOpen(function() {
+          return _this.start = Date.now();
+        });
+        _this.stream.onMessage(function(message) {
           var data;
           data = angular.fromJson(message.data);
           _this.scope.test.tasks[data.task].requests++;
           _this.scope.total.requests++;
           if (data.statusCode !== 0) {
             _this.scope.test.tasks[data.task].success++;
-            return _this.scope.total.success++;
+            _this.scope.total.success++;
           } else {
             _this.scope.test.tasks[data.task].failures++;
-            return _this.scope.total.failures++;
+            _this.scope.total.failures++;
+          }
+          if (data.duration < _this.scope.test.tasks[data.task].min || _this.scope.test.tasks[data.task].min === 0) {
+            _this.scope.test.tasks[data.task].min = data.duration;
+          }
+          if (data.duration > _this.scope.test.tasks[data.task].max || _this.scope.test.tasks[data.task].max === 0) {
+            _this.scope.test.tasks[data.task].max = data.duration;
+          }
+          return _this.scope.test.tasks[data.task].mean = (_this.scope.test.tasks[data.task].min + _this.scope.test.tasks[data.task].max) / 2;
+        });
+        return _this.stream.onClose(function() {
+          var time, _j, _len1, _ref1;
+          if (_this.start != null) {
+            time = (Date.now() - _this.start) / 1000;
+            _this.scope.total.rps = 0;
+            _ref1 = _this.scope.test.tasks;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              task = _ref1[_j];
+              task.rps = (task.requests / time).toFixed(2);
+              _this.scope.total.rps += task.requests / time;
+            }
+            _this.scope.total.rps = _this.scope.total.rps.toFixed(2);
+            return _this.scope.$apply();
           }
         });
       };
