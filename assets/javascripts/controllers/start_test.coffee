@@ -1,6 +1,6 @@
 module.exports = class
-  @$inject: ['$scope', '$http', '$routeParams', '$interval', '$websocket']
-  constructor: (@scope, @http, @params, @interval, @socket) ->
+  @$inject: ['$scope', '$http', '$routeParams', '$location', '$websocket']
+  constructor: (@scope, @http, @params, @location, @socket) ->
     @scope.test =
       name: ''
       tasks: []
@@ -16,6 +16,9 @@ module.exports = class
 
     @start = null
 
+    @host = @location.host()
+    @host = @host + ':' + @location.port() if @location.port() isnt 80 and @location.port() isnt 443
+
     @http.get '/api/tests/'+@params.id
     .success (res) =>
       @scope.test = res
@@ -29,7 +32,7 @@ module.exports = class
         task.max = 0
         task.rps = '..'
 
-      @stream = @socket 'ws://127.0.0.1:9410/api/tests/'+@params.id+'/start'
+      @stream = @socket 'ws://'+@host+'/api/tests/'+@params.id+'/start'
 
       @stream.onOpen () =>
         @start = Date.now()

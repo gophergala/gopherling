@@ -93,13 +93,13 @@ module.exports = (function() {
 
 },{}],3:[function(require,module,exports){
 module.exports = (function() {
-  _Class.$inject = ['$scope', '$http', '$routeParams', '$interval', '$websocket'];
+  _Class.$inject = ['$scope', '$http', '$routeParams', '$location', '$websocket'];
 
-  function _Class(scope, http, params, interval, socket) {
+  function _Class(scope, http, params, location, socket) {
     this.scope = scope;
     this.http = http;
     this.params = params;
-    this.interval = interval;
+    this.location = location;
     this.socket = socket;
     this.scope.test = {
       name: '',
@@ -115,6 +115,10 @@ module.exports = (function() {
       rps: '..'
     };
     this.start = null;
+    this.host = this.location.host();
+    if (this.location.port() !== 80 && this.location.port() !== 443) {
+      this.host = this.host + ':' + this.location.port();
+    }
     this.http.get('/api/tests/' + this.params.id).success((function(_this) {
       return function(res) {
         var task, _i, _len, _ref;
@@ -130,7 +134,7 @@ module.exports = (function() {
           task.max = 0;
           task.rps = '..';
         }
-        _this.stream = _this.socket('ws://127.0.0.1:9410/api/tests/' + _this.params.id + '/start');
+        _this.stream = _this.socket('ws://' + _this.host + '/api/tests/' + _this.params.id + '/start');
         _this.stream.onOpen(function() {
           return _this.start = Date.now();
         });
