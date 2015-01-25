@@ -1,5 +1,48 @@
     <section class="subheader">
       <div class="container">
-        <h2>Test 1</h2>
+        <h2>{{test.name}}</h2>
+      </div>
+    </section>
+
+    <section id="feedback">
+      <div class="container">
+        <table>
+          <tbody>
+            <tr>
+              <th>Method</th>
+              <th>Path</th>
+              <th>Requests</th>
+              <th>Success</th>
+              <th>Failures</th>
+              <th>Min</th>
+              <th>Mean</th>
+              <th>Max</th>
+              <th>Rps</th>
+            </tr>
+            <tr ng-repeat="task in test.tasks" ng-class-odd="'odd'" ng-class-even="'even'">
+              <td>[{{task.method}}]</td>
+              <td>{{task.path}}</td>
+              <td>{{task.requests}}</td>
+              <td>{{task.success}}</td>
+              <td>{{task.failures}}</td>
+              <td>{{task.min}}</td>
+              <td>{{task.mean}}</td>
+              <td>{{task.max}}</td>
+              <td>{{task.rps}}</td>
+            </tr>
+
+            <tr ng-class-odd="'odd'" ng-class-even="'even'">
+              <td>&nbsp;</td>
+              <td>Total</td>
+              <td>{{total.requests}}</td>
+              <td>{{total.success}}</td>
+              <td>{{total.failures}}</td>
+              <td>{{total.min}}</td>
+              <td>{{total.mean}}</td>
+              <td>{{total.max}}</td>
+              <td>{{total.rps}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>

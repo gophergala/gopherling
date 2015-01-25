@@ -192,3 +192,22 @@ main > footer
     margin-bottom remify(38)
     form
       col(1/2, cycle:2)
+
+#feedback
+  margin-top remify(38)
+  table
+    border 1px solid $very-light-grey 
+    font-size remify(18)
+    font-weight bold
+    text-align left
+    width 100%
+    tr
+      &:first-child
+        background $grey
+        color white
+      &.odd
+        background white
+      &.even
+        background $light-grey
+    td, th
+      padding remify(6) 0 remify(6) remify(6)

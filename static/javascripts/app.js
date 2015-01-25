@@ -100,10 +100,48 @@ module.exports = (function() {
     this.http = http;
     this.params = params;
     this.socket = socket;
-    this.stream = this.socket('ws://127.0.0.1:9410/api/tests/' + this.params.id + '/start');
-    this.stream.onMessage((function(_this) {
-      return function(message) {
-        return console.log(message.data);
+    this.scope.test = {
+      name: '',
+      tasks: []
+    };
+    this.scope.total = {
+      requests: 0,
+      success: 0,
+      failures: 0,
+      min: 0,
+      mean: 0,
+      max: 0,
+      rps: 0
+    };
+    this.http.get('/api/tests/' + this.params.id).success((function(_this) {
+      return function(res) {
+        var task, _i, _len, _ref;
+        _this.scope.test = res;
+        _ref = _this.scope.test.tasks;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          task = _ref[_i];
+          task.requests = 0;
+          task.success = 0;
+          task.failures = 0;
+          task.min = 0;
+          task.mean = 0;
+          task.max = 0;
+          task.rps = 0;
+        }
+        _this.stream = _this.socket('ws://127.0.0.1:9410/api/tests/' + _this.params.id + '/start');
+        return _this.stream.onMessage(function(message) {
+          var data;
+          data = angular.fromJson(message.data);
+          _this.scope.test.tasks[data.task].requests++;
+          _this.scope.total.requests++;
+          if (data.statusCode !== 0) {
+            _this.scope.test.tasks[data.task].success++;
+            return _this.scope.total.success++;
+          } else {
+            _this.scope.test.tasks[data.task].failures++;
+            return _this.scope.total.failures++;
+          }
+        });
       };
     })(this));
   }

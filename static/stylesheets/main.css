@@ -611,3 +611,27 @@ main > footer span {
 #new .tasks form:nth-child(2n+1) {
   clear: both;
 }
+#feedback {
+  margin-top: 2.375rem;
+}
+#feedback table {
+  border: 1px solid #c0c0c0;
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+}
+#feedback table tr:first-child {
+  background: #959595;
+  color: #fff;
+}
+#feedback table tr.odd {
+  background: #fff;
+}
+#feedback table tr.even {
+  background: #fafafa;
+}
+#feedback table td,
+#feedback table th {
+  padding: 0.375rem 0 0.375rem 0.375rem;
+}

@@ -7,6 +7,11 @@ import (
 	"sync"
 )
 
+type feedback struct {
+	Task       int `json:"task"`
+	StatusCode int `json:"statusCode"`
+}
+
 type loader struct {
 	n int
 	c int
@@ -38,19 +43,20 @@ func (l *loader) spawnClient(wg *sync.WaitGroup, queue chan []*http.Request) {
 
 	// if we're not busy, get a tasks list from the queue channel
 	for requests := range queue {
-		for _, req := range requests {
+		for i, req := range requests {
 			// Send the request
 			res, err := client.Do(req)
 			if err != nil {
-				fmt.Println("wut?")
+				if err := l.ws.WriteJSON(feedback{Task: i, StatusCode: 0}); err != nil {
+					fmt.Println("Couldn't write to the socket")
+				}
+			} else {
+				if err := l.ws.WriteJSON(feedback{Task: i, StatusCode: res.StatusCode}); err != nil {
+					fmt.Println("Couldn't write to the socket")
+				}
+
+				res.Body.Close()
 			}
-
-			res.Body.Close()
-
-		}
-
-		if err := l.ws.WriteMessage(websocket.TextMessage, []byte("One tasks batch done")); err != nil {
-			fmt.Println("An error occured: the requested test doesn't exist")
 		}
 		// We are done
 		wg.Done()
