@@ -38,21 +38,20 @@ func (l *loader) spawnClient(wg *sync.WaitGroup, queue chan []*http.Request) {
 
 	// if we're not busy, get a tasks list from the queue channel
 	for requests := range queue {
-		// Just do the first request for now (TODO: loop over all of them)
-		req := requests[0]
+		for _, req := range requests {
+			// Send the request
+			res, err := client.Do(req)
+			if err != nil {
+				fmt.Println("wut?")
+			}
 
-		// Send the request
-		res, err := client.Do(req)
-		if err != nil {
-			fmt.Println("wut?")
+			res.Body.Close()
+
 		}
 
-		res.Body.Close()
-
-		if err := l.ws.WriteMessage(websocket.TextMessage, []byte("One request done")); err != nil {
+		if err := l.ws.WriteMessage(websocket.TextMessage, []byte("One tasks batch done")); err != nil {
 			fmt.Println("An error occured: the requested test doesn't exist")
 		}
-
 		// We are done
 		wg.Done()
 	}
