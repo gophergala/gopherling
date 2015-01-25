@@ -15,7 +15,7 @@ var (
 )
 
 type Test struct {
-	Id          bson.ObjectId `bson:"_id,omitempty"`
+	Id          bson.ObjectId `bson:"_id,omitempty" json:"-"`
 	Name        string        `bson:"name"`
 	Description string        `bson:"description"`
 	BaseUrl     string        `bson:"base_url"`
@@ -52,7 +52,24 @@ func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func showTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "I want to see a specific test, (id: %s)!\n", ps.ByName("id"))
+	var t Test
+
+	err := database.C("tests").Find(bson.M{"_id": bson.ObjectIdHex(ps.ByName("id"))}).One(&t)
+
+	if err != nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	js, err := json.Marshal(t)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	w.Write(js)
 }
 
 func updateTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
