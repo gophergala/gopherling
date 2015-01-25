@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gophergala/gopherling/loader"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -24,7 +25,7 @@ type Test struct {
 }
 
 func showTests(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	results := make([]Test, 0) 
+	results := make([]Test, 0)
 	err := database.C("tests").Find(bson.M{}).All(&results)
 
 	if err != nil {
@@ -104,11 +105,26 @@ func deleteTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "I want to start a test, (id: %s)!\n", ps.ByName("id"))
+	var t Test
+
+	err := database.C("tests").Find(bson.M{"_id": bson.ObjectIdHex(ps.ByName("id"))}).One(&t)
+
+	if err != nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	l := loader.New(1000, 100)
+
+	l.AddTasks()
+	go func() {
+		l.Run()
+	}()
+
+	w.WriteHeader(200)
 }
 
 func main() {
-
 	// Initialize our database connection
 	databaseSession, err := mgo.Dial("127.0.0.1:27017")
 	if err != nil {
