@@ -9,6 +9,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"flag"
 )
 
 var (
@@ -149,8 +150,15 @@ func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 }
 
 func main() {
+	// Database infos
+	var dbHost, dbPort string
+	flag.StringVar(&dbHost, "dbHost", "127.0.0.1", "mongoDB host")
+	flag.StringVar(&dbPort, "dbPort", "27017", "mongoDB port")
+	flag.Parse()
+
+
 	// Initialize our database connection
-	databaseSession, err := mgo.Dial("127.0.0.1:27017")
+	databaseSession, err := mgo.Dial(dbHost+":"+dbPort)
 	if err != nil {
 		panic("Couldn't connect to the database server")
 	} else {
