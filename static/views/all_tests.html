@@ -1,0 +1,18 @@
+    <section class="subheader">
+      <div class="container">
+        <h2>View all my tests</h2>
+      </div>
+    </section>
+
+    <section id="all-tests">
+      <div class="container">
+        <div class="test" ng-repeat="test in tests">
+          <h3>{{test.name}}</h3>
+          <div class="buttons">
+            <a ng-href="/#/tests/{{test._id}}">Start</a>
+            <a ng-href="/#/tests/{{test._id}}/edit">Edit</a>
+            <a href="" ng-click="delete(test._id)">Delete</a>
+          </div>
+        </div>
+      </div>
+    </section>

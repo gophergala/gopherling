@@ -14,14 +14,12 @@ class Config
       controller: 'NewTestController'
 
     .when '/tests',
-      templateUrl: 'views/tests.html'
+      templateUrl: 'views/all_tests.html'
+      controller: 'AllTestsController'
 
     .when '/tests/:id',
       templateUrl: 'views/start_test.html'
       controller: 'StartTestController'
-
-    .when '/settings',
-      templateUrl: 'views/settings.html'
 
     .otherwise
       redirectTo: '/'
