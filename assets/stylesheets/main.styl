@@ -21,6 +21,7 @@ body
   font-family 'Montserrat', sans-serif
   font-size remify(14)
   font-weight 400
+  line-height 1.5
 
 body > header
   background $blue
@@ -33,7 +34,7 @@ body > header
     font-family 'Pacifico', sans-serif
     font-size remify(38)
     float left
-    margin rhythm(1, 12, 4) 0 rhythm(1, 12) 0
+    margin rhythm(1, 2, 2) 0 rhythm(1, 2) 0
     text-align center
     a
       color white
@@ -145,10 +146,8 @@ main > footer
 
 #new
   form
-    col(1/2, cycle:2)
     border 1px solid $very-light-grey
     border-radius 4px
-    margin 0 auto
     margin-top remify(38)
     fieldset
       padding remify(12)
@@ -167,3 +166,29 @@ main > footer
         border-radius 2px
         margin-top remify(6)
         padding remify(6)
+  .new-test
+    form
+      col(1/2)
+    section
+      col(1/2)
+      background $light-grey
+      border 1px solid $very-light-grey
+      border-radius 4px
+      margin-top remify(38)
+      padding remify(12)
+      h2
+        font-size remify(28)
+        text-align center
+      ul
+        margin remify(14) 0
+        li
+          list-style disc
+          list-style-position inside
+      div
+        text-align center
+        button
+          button($blue, white)
+  .tasks
+    margin-bottom remify(38)
+    form
+      col(1/2, cycle:2)

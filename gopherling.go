@@ -15,13 +15,19 @@ var (
 	databaseSession *mgo.Session
 )
 
+type Task struct {
+	Method string `bson:"method" json:"method"`
+	Path   string `bson:"path" json:"path"`
+}
+
 type Test struct {
-	Id          bson.ObjectId `bson:"_id,omitempty" json:"-"`
-	Name        string        `bson:"name"`
-	Description string        `bson:"description"`
-	BaseUrl     string        `bson:"base_url"`
-	Requests    int           `bson:"requests"`
-	Concurrency int           `bson:"concurrency"`
+	Id          bson.ObjectId `bson:"_id,omitempty" json:"_id,omitempty"`
+	Name        string        `bson:"name" json:"name"`
+	Description string        `bson:"description" json:"description"`
+	BaseUrl     string        `bson:"base_url" json:"base_url"`
+	Requests    int           `bson:"requests" json:"requests"`
+	Concurrency int           `bson:"concurrency" json:"concurrency"`
+	Tasks       []Task        `bson:"tasks" json:"tasks"`
 }
 
 func showTests(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -64,7 +70,15 @@ func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if err != nil {
 		w.WriteHeader(500)
 	} else {
+		js, err := json.Marshal(t)
+		if err != nil {
+			w.WriteHeader(500)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(201)
+		w.Write(js)
 	}
 }
 

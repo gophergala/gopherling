@@ -5,35 +5,50 @@
     </section>
 
     <section id="new">
-      <div class="container">
+      <div class="container new-test">
         <form action="">
           <fieldset>
             <label for="">Name</label>
-            <input type="text" placeholder="My awesome test">
+            <input type="text" placeholder="My awesome test" ng-model="test.name">
           </fieldset>
           <fieldset>
             <label for="">Description</label>
-            <input type="text" placeholder="This is the best test ever made in human history">
+            <input type="text" placeholder="This is the best test ever made in human history" ng-model="test.description">
           </fieldset>
           <fieldset>
             <label for="">Base URI</label>
-            <input type="text" placeholder="http://gopherling.tld:8080">
+            <input type="text" placeholder="http://gopherling.tld:8080" ng-model="test.baseUrl">
           </fieldset>
           <fieldset>
-            <label for="">Number of users</label>
-            <input type="text" placeholder="Test name">
+            <label for="">Total number of requests</label>
+            <input type="number" placeholder="Test name" ng-model="test.requests">
           </fieldset>
           <fieldset>
-            <label for="">Users spawn/second</label>
-            <input type="text" placeholder="Test name">
+            <label for="">Number of concurrent requests</label>
+            <input type="number" placeholder="Test name" ng-model="test.concurrency">
           </fieldset>
         </form>
-        <form action="">
+        <section>
+          <h2>How to?</h2>
+          <ul>
+          	<li>Start by configuring your test setting, and your first task</li>
+          	<li>Click on the "Add Task" button if you need to add more tasks</li>
+          	<li>Once finished you can either save your test for later use, and click on the "Save & Run" button to start it immediatly</li>
+          </ul>
+          <div>
+            <button ng-click="addTask()">Add Task</button>
+            <button ng-click="save()">Save</button>         
+            <button ng-click="save(true)">Save & Run</button>         
+          </div>
+        </section>
+      </div>
+      <div class="container tasks">
+        <form action="" ng-repeat="task in test.tasks">
           <fieldset>
             <ul>
               <li>
                 <label for="">Method</label>
-                <select id="" name="">
+                <select ng-model="task.method">
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
                   <option value="PUT">PUT</option>
@@ -42,14 +57,15 @@
               </li>
               <li>
                 <label for="">Host</label>
-                <input type="text" disabled>
+                <input type="text" value="{{test.baseUrl}}/" disabled>
               </li>
               <li>
                 <label for="">Path</label>
-                <input type="text">
+                <input type="text" ng-model="task.path">
               </li>
             </ul>
           </fieldset>
         </form>
       </div>
+
     </section>

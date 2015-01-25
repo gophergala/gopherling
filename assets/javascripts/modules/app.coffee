@@ -1,6 +1,8 @@
 require 'angular'
 require 'angular-route'
 
-app = angular.module 'app', ['ngRoute']
+require './app.controllers'
+
+app = angular.module 'app', ['ngRoute', 'app.controllers']
 
 module.exports = app

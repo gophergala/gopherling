@@ -11,6 +11,7 @@ class Config
 
     .when '/new',
       templateUrl: 'views/new.html'
+      controller: 'NewTestController'
 
     .when '/tests',
       templateUrl: 'views/tests.html'

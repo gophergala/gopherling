@@ -9,7 +9,8 @@ Config = (function() {
     $routeProvider.when('/', {
       templateUrl: 'views/home.html'
     }).when('/new', {
-      templateUrl: 'views/new.html'
+      templateUrl: 'views/new.html',
+      controller: 'NewTestController'
     }).when('/tests', {
       templateUrl: 'views/tests.html'
     }).when('/settings', {
@@ -27,20 +28,94 @@ angular.module('app').config(['$routeProvider', '$locationProvider', Config]);
 
 
 
-},{"./modules/app":2}],2:[function(require,module,exports){
+},{"./modules/app":3}],2:[function(require,module,exports){
+var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+module.exports = (function() {
+  _Class.$inject = ['$scope', '$http', '$location'];
+
+  function _Class(scope, http, location) {
+    this.scope = scope;
+    this.http = http;
+    this.location = location;
+    this.save = __bind(this.save, this);
+    this.addTask = __bind(this.addTask, this);
+    this.scope.test = {
+      name: '',
+      description: '',
+      baseUrl: '',
+      requests: 0,
+      concurrency: 0,
+      tasks: []
+    };
+    this.addTask();
+    angular.extend(this.scope, {
+      save: this.save,
+      addTask: this.addTask
+    });
+  }
+
+  _Class.prototype.addTask = function() {
+    return this.scope.test.tasks.push({
+      method: 'GET',
+      path: ''
+    });
+  };
+
+  _Class.prototype.save = function(run) {
+    if (run == null) {
+      run = false;
+    }
+    return this.http.post('/api/tests', this.scope.test).success((function(_this) {
+      return function(res) {
+        if (run === true) {
+          _this.location.path('/tests/' + res._id);
+          console.debug('Test (' + res._id + ') will be started');
+        } else {
+          _this.location.path('/tests');
+        }
+        return console.debug('Your test has been saved');
+      };
+    })(this)).error((function(_this) {
+      return function(err) {
+        return console.debug('An error occured');
+      };
+    })(this));
+  };
+
+  return _Class;
+
+})();
+
+
+
+},{}],3:[function(require,module,exports){
 var app;
 
 require('angular');
 
 require('angular-route');
 
-app = angular.module('app', ['ngRoute']);
+require('./app.controllers');
+
+app = angular.module('app', ['ngRoute', 'app.controllers']);
 
 module.exports = app;
 
 
 
-},{"angular":4,"angular-route":3}],3:[function(require,module,exports){
+},{"./app.controllers":4,"angular":6,"angular-route":5}],4:[function(require,module,exports){
+var app;
+
+app = angular.module('app.controllers', []);
+
+app.controller('NewTestController', require('../controllers/new_test'));
+
+module.exports = app;
+
+
+
+},{"../controllers/new_test":2}],5:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -1037,7 +1112,7 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
