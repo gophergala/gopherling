@@ -43,7 +43,7 @@
         </section>
       </div>
       <div class="container tasks">
-        <form action="" ng-repeat="task in test.tasks">
+        <form ng-repeat="task in test.tasks">
           <fieldset>
             <ul>
               <li>
@@ -64,6 +64,30 @@
                 <input type="text" ng-model="task.path">
               </li>
             </ul>
+          </fieldset>
+          <fieldset>
+            <h2>Headers</h2>
+            <button ng-click="addHeader(task)">Add header</button>
+          </fieldset>
+          <fieldset ng-repeat="header in task.headers">
+            <ul>
+              <li>
+                <br>
+                <a href="" ng-click="removeHeader(task, header)">Remove</a>
+              </li>
+              <li>
+                <label for="">Field</label>
+                <input type="text" ng-model="header.field">
+              </li>
+              <li>
+                <label for="">Value</label>
+                <input type="text" ng-model="header.value">
+              </li>
+            </ul>
+          </fieldset>
+          <fieldset>
+            <h2>Remove this task</h2>
+            <button ng-click="removeTask(task)">Remove</button>
           </fieldset>
         </form>
       </div>

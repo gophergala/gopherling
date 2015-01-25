@@ -74,7 +74,10 @@ module.exports = (function() {
 
 
 },{"underscore":10}],3:[function(require,module,exports){
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var _,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+_ = require('underscore');
 
 module.exports = (function() {
   _Class.$inject = ['$scope', '$http', '$location'];
@@ -84,6 +87,9 @@ module.exports = (function() {
     this.http = http;
     this.location = location;
     this.save = __bind(this.save, this);
+    this.removeHeader = __bind(this.removeHeader, this);
+    this.addHeader = __bind(this.addHeader, this);
+    this.removeTask = __bind(this.removeTask, this);
     this.addTask = __bind(this.addTask, this);
     this.scope.test = {
       name: '',
@@ -96,14 +102,37 @@ module.exports = (function() {
     this.addTask();
     angular.extend(this.scope, {
       save: this.save,
-      addTask: this.addTask
+      addTask: this.addTask,
+      removeTask: this.removeTask,
+      addHeader: this.addHeader,
+      removeHeader: this.removeHeader
     });
   }
 
   _Class.prototype.addTask = function() {
     return this.scope.test.tasks.push({
       method: 'GET',
-      path: ''
+      path: '',
+      headers: []
+    });
+  };
+
+  _Class.prototype.removeTask = function(task) {
+    return this.scope.test.tasks = _(this.scope.test.tasks).reject(function(t) {
+      return t === task;
+    });
+  };
+
+  _Class.prototype.addHeader = function(task) {
+    return task.headers.push({
+      field: '',
+      value: ''
+    });
+  };
+
+  _Class.prototype.removeHeader = function(task, header) {
+    return task.headers = _(task.headers).reject(function(h) {
+      return h === header;
     });
   };
 
@@ -111,6 +140,7 @@ module.exports = (function() {
     if (run == null) {
       run = false;
     }
+    console.log(this.scope.test);
     return this.http.post('/api/tests', this.scope.test).success((function(_this) {
       return function(res) {
         if (run === true) {
@@ -133,7 +163,7 @@ module.exports = (function() {
 
 
 
-},{}],4:[function(require,module,exports){
+},{"underscore":10}],4:[function(require,module,exports){
 module.exports = (function() {
   _Class.$inject = ['$scope', '$http', '$routeParams', '$location', '$websocket'];
 

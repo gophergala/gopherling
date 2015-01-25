@@ -1,3 +1,5 @@
+_ = require 'underscore'
+
 module.exports = class
   @$inject: ['$scope', '$http', '$location']
   constructor: (@scope, @http, @location) ->
@@ -14,13 +16,31 @@ module.exports = class
     angular.extend @scope,
       save: @save
       addTask: @addTask
+      removeTask: @removeTask
+      addHeader: @addHeader
+      removeHeader: @removeHeader
 
   addTask: () =>
     @scope.test.tasks.push
       method: 'GET'
       path: ''
+      headers: []
+
+  removeTask: (task) =>
+    @scope.test.tasks = _(@scope.test.tasks).reject (t) ->
+      t is task
+
+  addHeader: (task) =>
+    task.headers.push
+      field: ''
+      value: ''
+
+  removeHeader: (task, header) =>
+    task.headers = _(task.headers).reject (h) ->
+      h is header
 
   save: (run = false) =>
+    console.log @scope.test
     @http.post '/api/tests', @scope.test
     .success (res) =>
       if run is true
