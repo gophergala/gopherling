@@ -130,7 +130,7 @@ func startTest(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	l := loader.New(t.Requests, t.Concurrency, conn)
 
 	for _, task := range t.Tasks {
-		l.AddTasks(task.Method, t.BaseUrl, task.Path, task.Headers)
+		l.AddTasks(task.Method, t.BaseUrl, task.Path, task.Headers, task.RawBody)
 	}
 
 	l.Run()

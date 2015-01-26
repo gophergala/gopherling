@@ -113,7 +113,8 @@ module.exports = (function() {
     return this.scope.test.tasks.push({
       method: 'GET',
       path: '',
-      headers: []
+      headers: [],
+      rawBody: ''
     });
   };
 

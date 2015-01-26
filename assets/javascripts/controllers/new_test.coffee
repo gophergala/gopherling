@@ -25,6 +25,7 @@ module.exports = class
       method: 'GET'
       path: ''
       headers: []
+      rawBody: ''
 
   removeTask: (task) =>
     @scope.test.tasks = _(@scope.test.tasks).reject (t) ->

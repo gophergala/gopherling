@@ -1,12 +1,13 @@
 package loader
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/gophergala/gopherling/models"
 	"github.com/gorilla/websocket"
 	"net/http"
 	"sync"
 	"time"
-	"github.com/gophergala/gopherling/models"
 )
 
 type feedback struct {
@@ -15,23 +16,20 @@ type feedback struct {
 	Duration   time.Duration `json:"duration"`
 }
 
-type loader struct {
-	n int
-	c int
-
-	requests []*http.Request
-	ws       *websocket.Conn
+type Task struct {
+	method  string
+	host    string
+	path    string
+	headers []models.Header
+	rawBody string
 }
 
-func New(n, c int, ws *websocket.Conn) *loader {
-	requests := make([]*http.Request, 0)
-	return &loader{n, c, requests, ws}
-}
+func (t *Task) Request() *http.Request {
+	body := bytes.NewBufferString(t.rawBody)
 
-func (l *loader) AddTasks(method string, host string, path string, headers []models.Header) {
-	req, err := http.NewRequest(method, host+"/"+path, nil)
+	req, err := http.NewRequest(t.method, t.host+"/"+t.path, body)
 
-	for _, header := range headers {
+	for _, header := range t.headers {
 		req.Header.Set(header.Field, header.Value)
 	}
 
@@ -39,16 +37,41 @@ func (l *loader) AddTasks(method string, host string, path string, headers []mod
 		fmt.Println("something went wrong !")
 	}
 
-	l.requests = append(l.requests, req)
+	return req
 }
 
-func (l *loader) spawnClient(wg *sync.WaitGroup, queue chan []*http.Request) {
+type loader struct {
+	n int
+	c int
+
+	tasks []*Task
+	ws    *websocket.Conn
+}
+
+func New(n, c int, ws *websocket.Conn) *loader {
+	tasks := make([]*Task, 0)
+	return &loader{n, c, tasks, ws}
+}
+
+func (l *loader) AddTasks(method string, host string, path string, headers []models.Header, rawBody string) {
+	t := &Task{method: method,
+		host:    host,
+		path:    path,
+		headers: headers,
+		rawBody: rawBody,
+	}
+
+	l.tasks = append(l.tasks, t)
+}
+
+func (l *loader) spawnClient(wg *sync.WaitGroup, queue chan []*Task) {
 	// this is one out of c clients
 	client := &http.Client{}
 
 	// if we're not busy, get a tasks list from the queue channel
-	for requests := range queue {
-		for i, req := range requests {
+	for tasks := range queue {
+		for i, task := range tasks {
+			req := task.Request()
 			start := time.Now()
 			// Send the request
 			res, err := client.Do(req)
@@ -75,7 +98,7 @@ func (l *loader) Run() {
 	wg.Add(l.n)
 
 	// The queue channel will contain an array of tasks (up to n time)
-	queue := make(chan []*http.Request, l.n)
+	queue := make(chan []*Task, l.n)
 
 	// Spawn all our clients
 	for i := 0; i < l.c; i++ {
@@ -86,7 +109,7 @@ func (l *loader) Run() {
 
 	// Populate our channel with tasks arrays
 	for i := 0; i < l.n; i++ {
-		queue <- l.requests
+		queue <- l.tasks
 	}
 
 	// Close our channel

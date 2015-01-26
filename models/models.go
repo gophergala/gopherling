@@ -13,6 +13,7 @@ type Task struct {
 	Method  string   `bson:"method" json:"method"`
 	Path    string   `bson:"path" json:"path"`
 	Headers []Header `bson:"headers" json:"headers"`
+	RawBody string   `bson:"raw_body" json:"rawBody"`
 }
 
 type Test struct {
