@@ -17,6 +17,9 @@ Config = (function() {
     }).when('/tests/:id', {
       templateUrl: 'views/start_test.html',
       controller: 'StartTestController'
+    }).when('/tests/:id/edit', {
+      templateUrl: 'views/new_test.html',
+      controller: 'NewTestController'
     }).otherwise({
       redirectTo: '/'
     });
@@ -30,7 +33,7 @@ angular.module('app').config(['$routeProvider', '$locationProvider', Config]);
 
 
 
-},{"./modules/app":5}],2:[function(require,module,exports){
+},{"./modules/app":6}],2:[function(require,module,exports){
 var _,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -73,7 +76,7 @@ module.exports = (function() {
 
 
 
-},{"underscore":10}],3:[function(require,module,exports){
+},{"underscore":11}],3:[function(require,module,exports){
 var _,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -164,7 +167,107 @@ module.exports = (function() {
 
 
 
-},{"underscore":10}],4:[function(require,module,exports){
+},{"underscore":11}],4:[function(require,module,exports){
+var _,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+_ = require('underscore');
+
+module.exports = (function() {
+  _Class.$inject = ['$scope', '$http', '$location', '$routeParams'];
+
+  function _Class(scope, http, location, params) {
+    this.scope = scope;
+    this.http = http;
+    this.location = location;
+    this.params = params;
+    this.save = __bind(this.save, this);
+    this.removeHeader = __bind(this.removeHeader, this);
+    this.addHeader = __bind(this.addHeader, this);
+    this.removeTask = __bind(this.removeTask, this);
+    this.addTask = __bind(this.addTask, this);
+    this.scope.test = {
+      name: '',
+      description: '',
+      baseUrl: '',
+      requests: 0,
+      concurrency: 0,
+      tasks: []
+    };
+    if (this.params.id != null) {
+      this.http.get('/api/tests/' + this.params.id).success((function(_this) {
+        return function(res) {
+          return _this.scope.test = res;
+        };
+      })(this));
+    } else {
+      this.addTask();
+    }
+    angular.extend(this.scope, {
+      save: this.save,
+      addTask: this.addTask,
+      removeTask: this.removeTask,
+      addHeader: this.addHeader,
+      removeHeader: this.removeHeader
+    });
+  }
+
+  _Class.prototype.addTask = function() {
+    return this.scope.test.tasks.push({
+      method: 'GET',
+      path: '',
+      headers: [],
+      rawBody: ''
+    });
+  };
+
+  _Class.prototype.removeTask = function(task) {
+    return this.scope.test.tasks = _(this.scope.test.tasks).reject(function(t) {
+      return t === task;
+    });
+  };
+
+  _Class.prototype.addHeader = function(task) {
+    return task.headers.push({
+      field: '',
+      value: ''
+    });
+  };
+
+  _Class.prototype.removeHeader = function(task, header) {
+    return task.headers = _(task.headers).reject(function(h) {
+      return h === header;
+    });
+  };
+
+  _Class.prototype.save = function(run) {
+    if (run == null) {
+      run = false;
+    }
+    console.log(this.scope.test);
+    return this.http.post('/api/tests', this.scope.test).success((function(_this) {
+      return function(res) {
+        if (run === true) {
+          _this.location.path('/tests/' + res._id);
+        } else {
+          _this.location.path('/tests');
+        }
+        return console.debug('Your test has been saved');
+      };
+    })(this)).error((function(_this) {
+      return function(err) {
+        return console.debug('An error occured');
+      };
+    })(this));
+  };
+
+  return _Class;
+
+})();
+
+
+
+},{"underscore":11}],5:[function(require,module,exports){
 module.exports = (function() {
   _Class.$inject = ['$scope', '$http', '$routeParams', '$location', '$websocket'];
 
@@ -256,7 +359,7 @@ module.exports = (function() {
 
 
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var app;
 
 require('angular');
@@ -273,12 +376,14 @@ module.exports = app;
 
 
 
-},{"./app.controllers":6,"angular":9,"angular-route":7,"angular-websocket":8}],6:[function(require,module,exports){
+},{"./app.controllers":7,"angular":10,"angular-route":8,"angular-websocket":9}],7:[function(require,module,exports){
 var app;
 
 app = angular.module('app.controllers', []);
 
 app.controller('NewTestController', require('../controllers/new_test'));
+
+app.controller('EditTestController', require('../controllers/edit_test'));
 
 app.controller('AllTestsController', require('../controllers/all_tests'));
 
@@ -288,7 +393,7 @@ module.exports = app;
 
 
 
-},{"../controllers/all_tests":2,"../controllers/new_test":3,"../controllers/start_test":4}],7:[function(require,module,exports){
+},{"../controllers/all_tests":2,"../controllers/edit_test":3,"../controllers/new_test":4,"../controllers/start_test":5}],8:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -1285,10 +1390,10 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 })(window, window.angular);
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 !function(){"use strict";function t(t,e,o,u){function p(e,o,r){r||!c(o)||l(o)||(r=o,o=void 0),this.protocols=o,this.url=e||"Missing URL",this.ssl=/(wss)/i.test(this.url),this.scope=r&&r.scope||t,this.rootScopeFailover=r&&r.rootScopeFailover&&!0,this._reconnectAttempts=r&&r.reconnectAttempts||0,this.initialTimeout=r&&r.initialTimeout||500,this.maxTimeout=r&&r.maxTimeout||3e5,this.sendQueue=[],this.onOpenCallbacks=[],this.onMessageCallbacks=[],this.onErrorCallbacks=[],this.onCloseCallbacks=[],n(this._readyStateConstants),e?this._connect():this._setInternalState(0)}return p.prototype._readyStateConstants={CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3,RECONNECT_ABORTED:4},p.prototype._reconnectableStatusCodes=[4e3],p.prototype.safeDigest=function(t){t&&!this.scope.$$phase&&this.scope.$digest()},p.prototype.bindToScope=function(e){return e&&(this.scope=e,this.rootScopeFailover&&this.scope.$on("$destroy",function(){this.scope=t})),this},p.prototype._connect=function(t){(t||!this.socket||this.socket.readyState!==this._readyStateConstants.OPEN)&&(this.socket=u.create(this.url,this.protocols),this.socket.onopen=this._onOpenHandler.bind(this),this.socket.onmessage=this._onMessageHandler.bind(this),this.socket.onerror=this._onErrorHandler.bind(this),this.socket.onclose=this._onCloseHandler.bind(this))},p.prototype.fireQueue=function(){for(;this.sendQueue.length&&this.socket.readyState===this._readyStateConstants.OPEN;){var t=this.sendQueue.shift();this.socket.send(s(t.message)?t.message:JSON.stringify(t.message)),t.deferred.resolve()}},p.prototype.notifyOpenCallbacks=function(){for(var t=0;t<this.onOpenCallbacks.length;t++)this.onOpenCallbacks[t].call(this)},p.prototype.notifyCloseCallbacks=function(t){for(var e=0;e<this.onCloseCallbacks.length;e++)this.onCloseCallbacks[e].call(this,t)},p.prototype.notifyErrorCallbacks=function(t){for(var e=0;e<this.onErrorCallbacks.length;e++)this.onErrorCallbacks[e].call(this,t)},p.prototype.onOpen=function(t){return this.onOpenCallbacks.push(t),this},p.prototype.onClose=function(t){return this.onCloseCallbacks.push(t),this},p.prototype.onError=function(t){return this.onErrorCallbacks.push(t),this},p.prototype.onMessage=function(t,e){if(!i(t))throw new Error("Callback must be a function");if(e&&a(e.filter)&&!s(e.filter)&&!(e.filter instanceof RegExp))throw new Error("Pattern must be a string or regular expression");return this.onMessageCallbacks.push({fn:t,pattern:e?e.filter:void 0,autoApply:e?e.autoApply:!0}),this},p.prototype._onOpenHandler=function(){this._reconnectAttempts=0,this.notifyOpenCallbacks(),this.fireQueue()},p.prototype._onCloseHandler=function(t){this.notifyCloseCallbacks(t),this._reconnectableStatusCodes.indexOf(t.code)>-1&&this.reconnect()},p.prototype._onErrorHandler=function(t){this.notifyErrorCallbacks(t)},p.prototype._onMessageHandler=function(t){for(var e,o,n=this,r=0;r<n.onMessageCallbacks.length;r++)o=n.onMessageCallbacks[r],e=o.pattern,e?s(e)&&t.data===e?(o.fn.call(n,t),n.safeDigest(o.autoApply)):e instanceof RegExp&&e.exec(t.data)&&(o.fn.call(n,t),n.safeDigest(o.autoApply)):(o.fn.call(n,t),n.safeDigest(o.autoApply))},p.prototype.close=function(t){return(t||!this.socket.bufferedAmount)&&this.socket.close(),this},p.prototype.send=function(t){function o(t){t.cancel=n;var e=t.then;return t.then=function(){var t=e.apply(this,arguments);return o(t)},t}function n(e){return s.sendQueue.splice(s.sendQueue.indexOf(t),1),r.reject(e),s}var r=e.defer(),s=this,i=o(r.promise);return s.readyState===s._readyStateConstants.RECONNECT_ABORTED?r.reject("Socket connection has been closed"):(s.sendQueue.push({message:t,deferred:r}),s.fireQueue()),i},p.prototype.reconnect=function(){var t=this;return t.close(),o(t._connect,t._getBackoffDelay(++t._reconnectAttempts)),t},p.prototype._getBackoffDelay=function(t){var e=Math.random()+1,o=this.initialTimeout,n=2,r=t,s=this.maxTimeout;return Math.floor(Math.min(e*o*Math.pow(n,r),s))},p.prototype._setInternalState=function(t){if(Math.floor(t)!==t||0>t||t>4)throw new Error("state must be an integer between 0 and 4, got: "+t);r||(this.readyState=t||this.socket.readyState),this._internalConnectionState=t,angular.forEach(this.sendQueue,function(t){t.deferred.reject("Message cancelled due to closed socket connection")})},r&&r(p.prototype,"readyState",{get:function(){return this._internalConnectionState||this.socket.readyState},set:function(){throw new Error("The readyState property is read-only")}}),function(t,e){return new p(t,e)}}function e(t,e){this.create=function(e,o){var n,r,s=/wss?:\/\//.exec(e);if(!s)throw new Error("Invalid url provided");if("object"==typeof exports&&require)try{r=require("ws"),n=r.Client||r.client||r}catch(i){}return n=n||t.WebSocket||t.MozWebSocket,o?new n(e,o):new n(e)},this.createWebSocketBackend=function(t,o){return e.warn("Deprecated: Please use .create(url, protocols)"),this.create(t,o)}}var o=angular.noop,n=Object.freeze?Object.freeze:o,r=Object.defineProperty,s=angular.isString,i=angular.isFunction,a=angular.isDefined,c=angular.isObject,l=angular.isArray,u=Array.prototype.slice;Array.prototype.indexOf||(Array.prototype.indexOf=function(t){var e=this.length>>>0,o=Number(arguments[1])||0;for(o=0>o?Math.ceil(o):Math.floor(o),0>o&&(o+=e);e>o;o++)if(o in this&&this[o]===t)return o;return-1}),Function.prototype.bind||(Function.prototype.bind=function(t){if("function"!=typeof this)throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");var e=u.call(arguments,1),o=this,n=function(){},r=function(){return o.apply(this instanceof n&&t?this:t,e.concat(u.call(arguments)))};return n.prototype=this.prototype,r.prototype=new n,r}),angular.module("ngWebSocket",[]).factory("$websocket",["$rootScope","$q","$timeout","$websocketBackend",t]).factory("WebSocket",["$rootScope","$q","$timeout","WebsocketBackend",t]).service("$websocketBackend",["$window","$log",e]).service("WebSocketBackend",["$window","$log",e]),angular.module("angular-websocket",["ngWebSocket"])}();
 //# sourceMappingURL=angular-websocket.min.js.map
-},{"ws":11}],9:[function(require,module,exports){
+},{"ws":12}],10:[function(require,module,exports){
 /**
  * @license AngularJS v1.3.8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
@@ -27359,7 +27464,7 @@ var styleDirective = valueFn({
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}</style>');
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 //     Underscore.js 1.7.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -28776,7 +28881,7 @@ var styleDirective = valueFn({
   }
 }.call(this));
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 /**
  * Module dependencies.

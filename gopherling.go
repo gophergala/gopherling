@@ -55,8 +55,12 @@ func addTest(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	tests := database.C("tests")
 
-	t.Id = bson.NewObjectId()
+	// i'm in a hurry :p
+	if len(t.Id) > 0 {
+		err = database.C("tests").RemoveId(t.Id)
+	}
 
+	t.Id = bson.NewObjectId()
 	err = tests.Insert(&t)
 
 	if err != nil {

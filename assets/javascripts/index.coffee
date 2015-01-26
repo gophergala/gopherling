@@ -21,6 +21,10 @@ class Config
       templateUrl: 'views/start_test.html'
       controller: 'StartTestController'
 
+    .when '/tests/:id/edit',
+      templateUrl: 'views/new_test.html'
+      controller: 'NewTestController'
+
     .otherwise
       redirectTo: '/'
 

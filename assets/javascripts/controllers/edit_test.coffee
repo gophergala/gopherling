@@ -1,8 +1,8 @@
 _ = require 'underscore'
 
 module.exports = class
-  @$inject: ['$scope', '$http', '$location', '$routeParams']
-  constructor: (@scope, @http, @location, @params) ->
+  @$inject: ['$scope', '$http', '$location']
+  constructor: (@scope, @http, @location) ->
     @scope.test =
       name: ''
       description: ''
@@ -11,12 +11,7 @@ module.exports = class
       concurrency: 0
       tasks: []
 
-    if @params.id?
-      @http.get '/api/tests/'+@params.id
-      .success (res) =>
-        @scope.test = res
-    else
-      @addTask()
+    @addTask()
 
     angular.extend @scope,
       save: @save
