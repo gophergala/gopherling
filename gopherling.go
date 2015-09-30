@@ -182,7 +182,7 @@ func main() {
 	router.GET("/api/tests/:id/start", startTest)
 
 	// Catch-all (angular app)
-	router.NotFound = http.FileServer(http.Dir("static")).ServeHTTP
+	router.NotFound = http.HandlerFunc(http.FileServer(http.Dir("static")).ServeHTTP)
 
 	// Start listening
 	fmt.Println("Gopherling server started on port 9410")
